@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Neutro</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  /* Fundo estrelado preto e branco */
+  .stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  /* Etapa de senha */
+  .senha-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 85%;
+    max-width: 350px;
+    background: rgba(30, 30, 30, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    border: 1px solid #555;
+  }
+  .senha-container h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: white;
+  }
+  .senha-input {
+    width: 70%;
+    padding: 10px;
+    border: 2px solid #777;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    outline: none;
+    font-size: 14px;
+    box-shadow: 0 0 8px #444;
+  }
+  .senha-btn {
+    margin-top: 15px;
+    width: 50%;
+    padding: 10px;
+    background: linear-gradient(90deg,#333,#555);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px #222;
+    transition: 0.3s;
+  }
+  .senha-btn:hover {
+    background: linear-gradient(90deg,#444,#666);
+  }
+  .erro {
+    color: #ff4444;
+    margin-top: 10px;
+    display: none;
+    font-size: 13px;
+  }
+  .shake {
+    animation: shake 0.4s;
+  }
+  @keyframes shake {
+    0%,100% { transform: translate(-50%, -50%) translateX(0); }
+    25% { transform: translate(-50%, -50%) translateX(-6px); }
+    50% { transform: translate(-50%, -50%) translateX(6px); }
+    75% { transform: translate(-50%, -50%) translateX(-6px); }
+  }
+
+  /* Painel principal */
+  .panel {
+    display: none;
+    position: relative;
+    z-index: 1;
+    width: 80%;
+    max-width: 400px;
+    margin: 40px auto;
+    background: rgba(20,20,20,0.9);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(255,255,255,0.15);
+    border: 1px solid #555;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+  }
+  .option-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .option-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+  }
+  .option-sub {
+    font-size: 12px;
+    color: #bbb;
+  }
+  .switch {
+    width: 40px;
+    height: 20px;
+    background: #555;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  .switch.active {
+    background: #eee;
+  }
+  .switch.active::after {
+    left: 22px;
+    background: #333;
+  }
+
+  .fov-container {
+    margin: 15px 0;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    text-align: center;
+  }
+  .fov-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: white;
+  }
+  .fov-container input {
+    width: 100%;
+  }
+
+  .inject-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg,#333,#555);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .inject-btn:hover {
+    background: linear-gradient(90deg,#444,#666);
+  }
+
+  .bio {
+    margin-top: 20px;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    font-size: 13px;
+    text-align: center;
+    color: white;
+  }
+  .bio a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<!-- Etapa de senha -->
+<div class="senha-container" id="senhaContainer">
+  <h2>Digite a Senha</h2>
+  <input type="password" id="senhaInput" class="senha-input" placeholder="Senha...">
+  <button class="senha-btn" id="senhaBtn">Entrar</button>
+  <div class="erro" id="erroSenha">Senha incorreta!</div>
+</div>
+
+<!-- Painel principal -->
+<div class="panel" id="painel">
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">120 FPS</div>
+      <div class="option-sub">Melhoria em jogabilidade</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">Aimbot</div>
+      <div class="option-sub">Melhor mira automática</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">Norecoil</div>
+      <div class="option-sub">Controle de recuo</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">Aimfix</div>
+      <div class="option-sub">Correção de mira</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">Ping</div>
+      <div class="option-sub">Otimização de rede</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+  <div class="option">
+    <div class="option-info">
+      <div class="option-title">Segurança</div>
+      <div class="option-sub">Proteção ativa</div>
+    </div>
+    <div class="switch"></div>
+  </div>
+
+  <div class="fov-container">
+    <label for="fov">FOV: <span id="fovValue">0</span></label>
+    <input type="range" min="0" max="100" value="0" id="fov">
+  </div>
+
+  <button class="inject-btn" id="injectBtn">Injetar</button>
+
+  <div class="bio">
+    Criador oficial <b>@motaff1</b><br>
+    ⭐ Conheça meus produtos com os melhores preços!<br>
+    🛒 Acesse: <a href="https://sandwiche.me/motaff1" id="bioLink" target="_blank">motaff1.shop</a>
+  </div>
+</div>
+
+<script>
+  // estrelas
+  const starsContainer = document.getElementById("stars");
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    s.style.top = Math.random() * 100 + "%";
+    s.style.left = Math.random() * 100 + "%";
+    s.style.animationDuration = (2 + Math.random() * 3) + "s";
+    starsContainer.appendChild(s);
+  }
+
+  // senha
+  const senhaInput = document.getElementById("senhaInput");
+  const senhaBtn = document.getElementById("senhaBtn");
+  const erroSenha = document.getElementById("erroSenha");
+  const senhaContainer = document.getElementById("senhaContainer");
+  const painel = document.getElementById("painel");
+
+  senhaBtn.addEventListener("click", () => {
+    if (senhaInput.value === "xablausensi") {
+      senhaContainer.style.display = "none";
+      painel.style.display = "block";
+    } else {
+      erroSenha.style.display = "block";
+      senhaContainer.classList.add("shake");
+      setTimeout(()=>senhaContainer.classList.remove("shake"),400);
+    }
+  });
+
+  // switches
+  document.querySelectorAll(".switch").forEach(sw => {
+    sw.addEventListener("click", () => sw.classList.toggle("active"));
+  });
+
+  // fov
+  const fov = document.getElementById("fov");
+  const fovValue = document.getElementById("fovValue");
+  fov.addEventListener("input", () => fovValue.textContent = fov.value);
+
+  // botão injetar
+  const injectBtn = document.getElementById("injectBtn");
+  injectBtn.addEventListener("click", () => {
+    injectBtn.style.background = "linear-gradient(90deg,#0f0,#393)";
+    injectBtn.textContent = "Injetado";
+    setTimeout(()=>{
+      injectBtn.style.background = "linear-gradient(90deg,#333,#555)";
+      injectBtn.textContent = "Injetar";
+    },3000);
+  });
+</script>
+</body>
+</html>
